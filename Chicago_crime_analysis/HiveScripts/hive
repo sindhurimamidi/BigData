@@ -1,0 +1,9 @@
+CREATE EXTERNAL TABLE crimes (id STRING, caseNumber STRING, crimeDate STRING, block STRING, iucr STRING, primaryType STRING, description STRING, locationDesc STRING, arrest STRING, domestic STRING, beat STRING, district STRING, ward STRING, community STRING, fbiCode STRING, xCoordinate STRING, yCoordinate STRING, year STRING, lastUpdate STRING, latitude STRING, longitude STRING) COMMENT 'from csv file' ROW FORMAT DELIMITED FIELDS TERMINATED BY '\054' STORED AS TEXTFILE LOCATION 'hdfs:/user/Sattya/datasets/crimes.csv';
+
+bin/hive -e "SELECT community, COUNT(*) as communityCount FROM crimes GROUP BY community ORDER BY communityCount desc LIMIT 20" > ~/Documents/Sattya_MS/Big_Data/Project/HiveScripts/Output/CrimesByCommunity.csv;
+
+
+bin/hive -e "SELECT community, block, COUNT(*) as count FROM crimes where community=25 GROUP BY community,block ORDER BY count desc" > ~/Documents/Sattya_MS/Big_Data/Project/HiveScripts/Output/CrimesByCommunityPerBlock.csv;
+
+# From inside hive shell
+hive> INSERT OVERWRITE DIRECTORY 'hdfs:/user/Sattya/hiveoutputs/CrimesByCommunity' SELECT community, COUNT(*) as communityCount FROM crimes GROUP BY community ORDER BY communityCount desc LIMIT 20;
